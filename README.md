@@ -1,5 +1,8 @@
 # 3d-text inspired by https://www.ilithya.rocks/
 
+## demo
+https://3d-text-freab.vercel.app/
+
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
 Run this followed commands:
