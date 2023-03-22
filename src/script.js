@@ -2,7 +2,6 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
-import { Color, CompressedTexture } from "three";
 
 /**
  * Base
@@ -25,8 +24,9 @@ const scene = new THREE.Scene();
 /**
  * Textures
  */
-const textureLoader = new THREE.TextureLoader();
+// const textureLoader = new THREE.TextureLoader();
 // const matcapTexture = textureLoader.load("/textures/matcaps/7.png");
+const group = new THREE.Group();
 
 /***
  * fonts
@@ -35,8 +35,8 @@ const fontloader = new THREE.FontLoader();
 fontloader.load("/textures/Meaza_Regular.json", (fonts) => {
   const textGeometry = new THREE.TextBufferGeometry("ፍሬአብ መስፍን", {
     font: fonts,
-    size: 0.5,
-    height: 0.2,
+    size: 0.8,
+    height: 0.3,
     curveSegments: 112,
     bevelEnabled: true,
     bevelThickness: 0.003,
@@ -75,8 +75,9 @@ fontloader.load("/textures/Meaza_Regular.json", (fonts) => {
 
     const scale = Math.random();
     donut.scale.set(scale, scale, scale);
+    group.add(donut);
 
-    scene.add(donut);
+    scene.add(group);
   }
   for (let i = 0; i < 200; i++) {
     const torus = new THREE.Mesh(tourusgeo, Material);
@@ -91,7 +92,8 @@ fontloader.load("/textures/Meaza_Regular.json", (fonts) => {
     const scale = Math.random();
     torus.scale.set(scale, scale, scale);
 
-    scene.add(torus);
+    group.add(torus);
+    scene.add(group);
   }
 });
 
@@ -195,6 +197,14 @@ const tick = () => {
 
   // Update controls
   controls.update();
+  const t = Date.now() * 0.001;
+  const rx = Math.sin(t * 0.7) * 0.5;
+  const ry = Math.sin(t * 0.3) * 0.5;
+  const rz = Math.sin(t * 0.2) * 0.5;
+  group.rotation.x = rx;
+  group.rotation.y = ry;
+  group.rotation.z = rz;
+  renderer.render(scene, camera);
 
   // Render
   renderer.render(scene, camera);
