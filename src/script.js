@@ -8,6 +8,7 @@ import * as dat from "dat.gui";
  */
 // Debug
 const gui = new dat.GUI();
+gui.hide()
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -15,17 +16,6 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
-// /***
-//  * axis
-//  */
-// const axes = new THREE.AxesHelper();
-// scene.add(axes);
-
-/**
- * Textures
- */
-// const textureLoader = new THREE.TextureLoader();
-// const matcapTexture = textureLoader.load("/textures/matcaps/7.png");
 const group = new THREE.Group();
 
 /***
@@ -45,17 +35,9 @@ fontloader.load("/textures/Meaza_Regular.json", (fonts) => {
     bevelSegments: 5,
   });
   textGeometry.computeBoundingBox();
-  //   console.log(textGeometry.boundingBox);
-  //   textGeometry.translate(
-  //     -(textGeometry.boundingBox.max.x - 0.02) * 0.5,
-  //     -(textGeometry.boundingBox.max.y - 0.02) * 0.5,
-  //     -(textGeometry.boundingBox.max.z - 0.03) * 0.5
-  //   );
   textGeometry.center();
 
   const textmaterial = new THREE.MeshNormalMaterial();
-  //   textmaterial.color.add(#ffee00)
-  //   textmaterial.matcap = matcapTexture;
   const text = new THREE.Mesh(textGeometry, textmaterial);
   scene.add(text);
   const donutGeometry = new THREE.TorusBufferGeometry(0.3, 0.2, 20, 45);
@@ -98,16 +80,6 @@ fontloader.load("/textures/Meaza_Regular.json", (fonts) => {
 });
 
 /**
- * Object
- */
-// const cube = new THREE.Mesh(
-//   new THREE.BoxBufferGeometry(1, 1, 1),
-//   new THREE.MeshBasicMaterial()
-// );
-
-// scene.add(cube);
-
-/**
  * Sizes
  */
 const sizes = {
@@ -137,9 +109,9 @@ const camera = new THREE.PerspectiveCamera(
   75,
   sizes.width / sizes.height,
   0.1,
-  10000
+  1000
 );
-camera.position.x = 10000 * -2;
+camera.position.x = 1000 * -2;
 camera.position.y = 1;
 camera.position.z = 5;
 scene.add(camera);
