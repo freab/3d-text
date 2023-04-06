@@ -1,15 +1,12 @@
 import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import * as dat from "dat.gui";
+import gsap from "gsap";
 
 /**
- * Base
+ * loading
  */
-// Debug
-const gui = new dat.GUI();
-gui.hide()
-
+const loadingManager = new THREE.LoadingManager();
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -21,7 +18,7 @@ const group = new THREE.Group();
 /***
  * fonts
  */
-const fontloader = new THREE.FontLoader();
+const fontloader = new THREE.FontLoader(loadingManager);
 fontloader.load("/textures/Meaza_Regular.json", (fonts) => {
   const textGeometry = new THREE.TextBufferGeometry("ፍሬአብ መስፍን", {
     font: fonts,
@@ -35,6 +32,12 @@ fontloader.load("/textures/Meaza_Regular.json", (fonts) => {
     bevelSegments: 5,
   });
   textGeometry.computeBoundingBox();
+  //   console.log(textGeometry.boundingBox);
+  //   textGeometry.translate(
+  //     -(textGeometry.boundingBox.max.x - 0.02) * 0.5,
+  //     -(textGeometry.boundingBox.max.y - 0.02) * 0.5,
+  //     -(textGeometry.boundingBox.max.z - 0.03) * 0.5
+  //   );
   textGeometry.center();
 
   const textmaterial = new THREE.MeshNormalMaterial();
@@ -79,6 +82,29 @@ fontloader.load("/textures/Meaza_Regular.json", (fonts) => {
   }
 });
 
+/***
+ * overlay
+ */
+
+const overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1);
+const overlayMaterial = new THREE.ShaderMaterial({
+  transparent: true,
+  uniforms: {
+    uAlpha: { value: 0 },
+  },
+  vertexShader: `
+  void main(){
+    gl_Position = vec4(position, 1.0);
+  }`,
+  fragmentShader: `
+  uniform float uAlpha;
+  void main(){
+    gl_FragColor = vec4(0.0,0.0,0.0,uAlpha);
+  }
+  `,
+});
+const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial);
+scene.add(overlay);
 /**
  * Sizes
  */
@@ -109,9 +135,9 @@ const camera = new THREE.PerspectiveCamera(
   75,
   sizes.width / sizes.height,
   0.1,
-  1000
+  10000
 );
-camera.position.x = 1000 * -2;
+camera.position.x = 10000 * -2;
 camera.position.y = 1;
 camera.position.z = 5;
 scene.add(camera);
@@ -154,6 +180,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor("#ff8800");
 
 /**
  * Animate
@@ -169,12 +196,11 @@ const tick = () => {
 
   // Update controls
   controls.update();
-  const t = Date.now() * 0.001;
-  const rx = Math.sin(t * 0.7) * 0.5;
-  const ry = Math.sin(t * 0.3) * 0.5;
-  const rz = Math.sin(t * 0.2) * 0.5;
-  group.rotation.x = rx;
-  group.rotation.y = ry;
+  const rx = Math.sin(elapsedTime * 0.7) * 0.5;
+  const ry = Math.sin(elapsedTime * 0.3) * 0.5;
+  const rz = Math.sin(elapsedTime * 0.2) * 0.5;
+  group.rotation.x = ry;
+  group.rotation.y = rx;
   group.rotation.z = rz;
   renderer.render(scene, camera);
 
